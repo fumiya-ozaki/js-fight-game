@@ -1,0 +1,90 @@
+@charset "utf-8";
+
+*,*::before,*::after{
+  box-sizing: border-box;
+}
+
+a{
+  color: #333;
+  text-decoration: none;
+}
+
+main{
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ddd;
+  border-radius: 5px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+section{
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  h2{
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+
+  }
+}
+
+.enemy {
+  margin-bottom: 20px;
+}
+
+.hpGauge {
+  border: 1px solid #777;
+  margin-top: 10px;
+  &Value{
+    height: 15px;
+    background-color: #6bf;
+    transition: .3s;
+    width: 100%;
+  }
+}
+
+.hp{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  div:first-of-type::after{
+    content:'/';
+    margin: 0 5px;
+
+  }
+}
+
+.logs{
+  border: 1px solid #777;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-style: 16px;
+  line-height: 1.8;
+  height: 250px;
+  overflow: auto;
+  margin-top: 30px;
+  box-shadow: 0 0 3px 0 #777 inset;
+}
+
+.attack{
+  margin: 50px auto 0;
+  width: 200px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f44;
+  color: #fff;
+  border: 0;
+  outline: none;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  &.deactive{
+    pointer-events:none;
+    opacity: .5;
+  }
+}
+
