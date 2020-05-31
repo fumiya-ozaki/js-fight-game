@@ -1,4 +1,5 @@
-const damageRange = 0.3;
+const damageRange = 0.3,
+      criticalHitRate = 0.2;
 let logIndex = 0;
 
 const playerData ={
@@ -28,9 +29,6 @@ const enemiesData = [
     defence:2,
   },
 ];
-
-
-console.log(Math.floor(Math.random()*3))
 
 const enemyData = enemiesData[Math.floor(Math.random()* enemiesData.length)]
 
@@ -79,14 +77,18 @@ document.getElementById("attack").addEventListener("click",function(){
   const playerName = '<span style="color: blue;">' + playerData.name + "</span>",
         enemyName = '<span style="color: red;">' + enemyData.name + "</span>";
 
-
-  
-  const playerDamage = damageCalculation(playerData.attack,enemyData.defence);
+  //playerの攻撃処理
+  let playerDamage = damageCalculation(playerData.attack,enemyData.defence);
+  if(Math.random() < criticalHitRate){
+    playerDamage *= 2;
+    insertLog(playerName + "の攻撃！クリティカルヒット！" + enemyName + "に" + playerDamage + "のダメージ");
+  } else {
+    insertLog(playerName + "の攻撃！" + enemyName + "に" + playerDamage + "のダメージ");
+  }
   enemyData.hp -= playerDamage;
   insertText("currentEnemyHp",enemyData.hp);
   document.getElementById('currentEnemyHpGaugeValue').style.width = (enemyData.hp / enemyData.maxHp * 100) +"%";
-  insertLog(playerName + "の攻撃！" + enemyName + "に" + playerDamage + "のダメージ");
-
+  
   if(enemyData.hp <= 0){
     alert('勝利');
     victory= true;
@@ -94,14 +96,20 @@ document.getElementById("attack").addEventListener("click",function(){
     insertText("currentEnemyHp",enemyData.hp);
     document.getElementById('currentEnemyHpGaugeValue').style.width = 0 + "%";
   }
-
-
+  
+  
   if(!victory){
-    const enemyDamage = damageCalculation(enemyData.attack,playerData.defence);
+    //enemyの攻撃処理
+    let enemyDamage = damageCalculation(enemyData.attack,playerData.defence);
+    if(Math.random()<criticalHitRate){
+      enemyDamage*=2;
+      insertLog(enemyName + "の攻撃！クリティカルヒット！" + playerName + "に" + enemyDamage + "のダメージ");
+    } else{
+      insertLog(enemyName + "の攻撃！" + playerName + "に" + enemyDamage + "のダメージ");
+    }
     playerData.hp -= enemyDamage;
     insertText("currentPlayerHp",playerData.hp);
     document.getElementById('currentPlayerHpGaugeValue').style.width = (playerData.hp / playerData.maxHp * 100) +"%";
-    insertLog(enemyName + "の攻撃！" + playerName + "に" + enemyDamage + "のダメージ");
     
     if(playerData.hp <=0){
       alert('敗北');
