@@ -1,6 +1,8 @@
 const damageRange = 0.3,
       criticalHitRate = 0.2;
-let logIndex = 0;
+let logIndex = 0,
+    nowKilledNumber = 0,
+    targetKillsNumber = 2;
 
 const playerData ={
   name:"プレイヤー",
@@ -20,17 +22,21 @@ const enemiesData = [
     name:"フェアリー",
     hp:60,
     attack:4,
-    defence:2,
+    defence:1,
   },
   {
     name:"ガーゴイル",
-    hp:100,
-    attack:5,
+    hp:80,
+    attack:4,
     defence:2,
   },
 ];
 
-const enemyData = enemiesData[Math.floor(Math.random()* enemiesData.length)]
+for(let i = 0; i < enemiesData.length; i++){
+  enemiesData[i].maxHp = enemiesData[i].hp
+}
+console.log(enemiesData)
+let enemyData = enemiesData[Math.floor(Math.random()* enemiesData.length)]
 
 playerData.maxHp = playerData.hp;
 enemyData.maxHp = enemyData.hp;
@@ -61,6 +67,15 @@ function insertLog(texts){
   logsElement.insertBefore(createLog,logsElement.firstChild)
 }
 
+function showmodal(title,hiddenNextButtom = false){
+  document.getElementById("mask").classList.add("active");
+  document.getElementById("modal").classList.add("active");
+  document.getElementById("modalTitle").textContent = title;
+  if(hiddenNextButtom){
+    document.getElementById("modalNextButton").classList.add("hidden");
+  }
+}
+
 
 insertText("playerName",playerData.name);
 insertText("currentPlayerHp",playerData.hp);
@@ -69,6 +84,10 @@ insertText("maxPlayerHp",playerData.hp);
 insertText("enemyName",enemyData.name);
 insertText("currentEnemyHp",enemyData.hp);
 insertText("maxEnemyHp",enemyData.hp);
+
+insertText("nowkilledNumber",nowKilledNumber);
+insertText("targetKillsNumber",targetKillsNumber);
+
 
 document.getElementById("attack").addEventListener("click",function(){
   let victory = false,
@@ -90,14 +109,12 @@ document.getElementById("attack").addEventListener("click",function(){
   document.getElementById('currentEnemyHpGaugeValue').style.width = (enemyData.hp / enemyData.maxHp * 100) +"%";
   
   if(enemyData.hp <= 0){
-    alert('勝利');
     victory= true;
+    showmodal( enemyData.name + "を倒した！")
     enemyData.hp = 0;
     insertText("currentEnemyHp",enemyData.hp);
     document.getElementById('currentEnemyHpGaugeValue').style.width = 0 + "%";
   }
-  
-  
   if(!victory){
     //enemyの攻撃処理
     let enemyDamage = damageCalculation(enemyData.attack,playerData.defence);
@@ -112,16 +129,42 @@ document.getElementById("attack").addEventListener("click",function(){
     document.getElementById('currentPlayerHpGaugeValue').style.width = (playerData.hp / playerData.maxHp * 100) +"%";
     
     if(playerData.hp <=0){
-      alert('敗北');
       defeat= true;
+
       playerData.hp = 0;
       insertText("currentPlayerHp",playerData.hp);
       document.getElementById('currentPlayerHpGaugeValue').style.width = 0 +"%";
+      showmodal( enemyData.name + "に負けた",true);
     }
   }
   
   if (victory || defeat){
     this.classList.add("deactive");
   }
+
+  if(victory){
+    nowKilledNumber ++;
+    insertText("nowkilledNumber",nowKilledNumber);
+    if(nowKilledNumber === targetKillsNumber){
+      showmodal("おめでとう！ゲームクリア！",true);
+
+    }
+  }
+
+})
+
+document.getElementById("modalNextButton").addEventListener("click",function(){
+  enemyData.hp = enemyData.maxHp;
+  enemyData = enemiesData[Math.floor(Math.random()* enemiesData.length)];
+  insertText("enemyName",enemyData.name);
+  insertText("currentEnemyHp",enemyData.hp);
+  insertText("maxEnemyHp",enemyData.hp);
+
+  document.getElementById("mask").classList.remove("active");
+  document.getElementById("modal").classList.remove("active");
+  
+  document.getElementById('currentEnemyHpGaugeValue').style.width = "100%";
+  document.getElementById("attack").classList.remove("deactive");
+
 
 })
